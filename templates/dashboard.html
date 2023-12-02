@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DashBoard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light gray background */
+            color: #495057; /* Dark gray text */
+        }
+
+        h1, h2 {
+            color: #007bff; /* Blue headings */
+        }
+
+        a {
+            color: #007bff; /* Blue link */
+        }
+
+        a:hover {
+            color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body class="container mt-5">
+
+    <h1>Hello {{ current_user.username }}!</h1>
+    <h2>This is your space</h2>
+
+    <!-- Bootstrap JS and Popper.js (Required for Bootstrap JavaScript components) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap Logout Link at the end of the page -->
+    <div class="mt-3">
+        <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
+    </div>
+</body>
+</html>
