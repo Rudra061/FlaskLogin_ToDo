@@ -5,12 +5,14 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = "MyKey"
 db = SQLAlchemy(app)
+migrate = Migrate(app,db)
 app.app_context().push()
 
 login_manager = LoginManager()
@@ -34,7 +36,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    status = db.Column(db.Boolean, default=False)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -101,6 +103,7 @@ def register():
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def dashboard():
     form = TaskForm()
     if form.validate_on_submit():
@@ -108,10 +111,30 @@ def dashboard():
         db.session.add(new_task)
         db.session.commit()
         flash('Task added successfully', 'success')
-        redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
 
     user_tasks = Task.query.filter_by(user_id=current_user.id).all()
     return render_template('dashboard.html', tasks=user_tasks, form=form)
+
+
+@app.route('/update/<int:task_id>', methods=['GET','POST'])
+@login_required
+def update(task_id):
+    task = Task.query.filter_by(id=task_id).first()
+    if task:
+        task.status = not task.status
+        db.session.commit()
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/delete/<int:task_id>', methods=['GET','POST'])
+@login_required
+def delete(task_id):
+    task = Task.query.filter_by(id=task_id).first()
+    if task:
+        db.session.delete(task)
+        db.session.commit()
+    return redirect(url_for('dashboard'))
 
 
 if __name__ == '__main__':
