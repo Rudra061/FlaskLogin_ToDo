@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>DashBoard</title>
+    <title>Tasks</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -14,9 +14,10 @@
         body {
             background-color: #f8f9fa; /* Light gray background */
             color: #495057; /* Dark gray text */
+            padding-top: 5rem; /* Adjusted for fixed navbar */
         }
 
-        h1, h2 {
+        h1, h2, h3 {
             color: #007bff; /* Blue headings */
         }
 
@@ -27,12 +28,39 @@
         a:hover {
             color: #0056b3; /* Darker blue on hover */
         }
+
+        /* Added margin to the bottom of h1 */
+        h1 {
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
-<body class="container mt-5">
+<body class="container">
 
-    <h1>Hello {{ current_user.username }}!</h1>
-    <h2>This is your space</h2>
+    <h1 class="mt-5">Hello, {{ current_user.username }}!</h1>
+
+    <!-- Add Task Form -->
+    <div class="mt-4">
+        <h2>Add Task</h2>
+        <form method="post" action="{{ url_for('dashboard') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.content.label(class="font-weight-bold") }}
+                {{ form.content(class="form-control", placeholder="Enter task") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+
+    <!-- Task List -->
+    <div class="mt-4">
+        <h3>To Do</h3>
+        <ul class="list-group">
+            {% for task in tasks %}
+                <li class="list-group-item">{{ task.content }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <!-- Bootstrap JS and Popper.js (Required for Bootstrap JavaScript components) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
